@@ -20,7 +20,7 @@ my_pool = pooling.MySQLConnectionPool(
     host='localhost',
     user='root',
     password=PASSWORD,
-    database=DATABASE
+    database=DATABASE,auth_plugin='mysql_native_password'
 )
 
 
