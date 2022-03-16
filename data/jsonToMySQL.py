@@ -20,7 +20,7 @@ db = mysql.connector.connect(
   user = 'root',
   password = PASSWORD,
   database = DATABASE,
-  )
+  auth_plugin='mysql_native_password')
 cursor=db.cursor()
 
 
