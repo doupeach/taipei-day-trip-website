@@ -6,6 +6,7 @@ from flask import *
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+# app.config['Access-Control-Allow-Origin'] = '*'
 
 # add by me
 load_dotenv()
@@ -122,6 +123,7 @@ def attractions():
                     "images": json.loads(result[9])
                 }
                 attractions_list.append(data)
+                
             if attractions_list == []:
                 return app.response_class(json.dumps(
                     {"error": True,
