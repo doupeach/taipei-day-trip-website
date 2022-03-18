@@ -20,12 +20,35 @@ db = mysql.connector.connect(
   user = 'root',
   password = PASSWORD,
   database = DATABASE,
-  )
+  auth_plugin='mysql_native_password')
 cursor=db.cursor()
 
 
 # 2. create table
+def createTable():
+    
+    createTable = """CREATE TABLE attractions(
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    category VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    address VARCHAR(255) NOT NULL,
+    transport TEXT,
+    mrt VARCHAR(255),
+    latitude DOUBLE NOT NULL,
+    longitude DOUBLE NOT NULL,
+    images JSON);"""
+
+    try:
+        cursor.execute(createTable)
+    except Error as e:
+            print("Error:", e)
+    finally:
+        print("Table attraction is created")
+
+createTable()
 # 3. handle img url
+
 # 4. insert to table
 
 with open("taipei-attractions.json", encoding="utf-8") as response:
@@ -33,16 +56,6 @@ with open("taipei-attractions.json", encoding="utf-8") as response:
     raw_data = json_data["result"]["results"]
 
 # Clean image files
-def getImage():
-    for data in raw_data:
-        images_url = data["file"].split("https://")
-        del images_url[0]
-            
-        for image_url in images_url:
-            image_format = image_url[-4:].lower()
-            if image_format == ".jpg" or image_format == ".png":
-                image_url = ["https://" + final for final in images_url]
-                return image_url
 
 def insertData():
     for data in raw_data:
@@ -55,7 +68,12 @@ def insertData():
         mrt = data["MRT"]
         latitude = data["latitude"]
         longitude = data["longitude"]
-        images = getImage()
+        images_list=[]
+
+        for i in data["file"].split("https://"):
+            if i.lower().endswith("jpg") :
+                images_list.append("https://"+i)
+        images = ','.join(images_list)
 
         sql = 'INSERT INTO attractions (id, name, category, description, address, transport, mrt, latitude, longitude, images) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
         val = (id, name, category, description, address, transport, mrt, latitude, longitude, json.dumps(images))
