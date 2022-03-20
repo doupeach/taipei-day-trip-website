@@ -32,12 +32,15 @@ function render(res) {
   searchKeyword = document.getElementById("search-value").value
   console.log('Next Page:',page)
     const cardsDiv = document.createElement("div");
+    cardsDiv.className = "cards";
     if(res.data){
     for (let key = 0; key < res.data.length; key++) {
         data = res.data
-        cardsDiv.className = "cards";
         const wrap = document.createElement("div");
         wrap.className = "card";
+        const link = document.createElement("a");
+        link.href = `/attraction/${data[key].id}`
+        link.className = 'link'
         const image = document.createElement("img");
         const title = document.createElement("div");
         const MRTandCategory = document.createElement("div");
@@ -53,9 +56,10 @@ function render(res) {
 
       MRTandCategory.appendChild(MRT);
       MRTandCategory.appendChild(category);
-      wrap.appendChild(image);
-      wrap.appendChild(title);
-      wrap.appendChild(MRTandCategory);
+      wrap.appendChild(link);
+      link.appendChild(image);
+      link.appendChild(title);
+      link.appendChild(MRTandCategory);
       cardsDiv.appendChild(wrap);
     }
   } 
