@@ -178,6 +178,13 @@ function renderAttraction(res){
         })    
         }
 
+
+    const timeDay = document.getElementById('time-day')
+    const timeNight = document.getElementById('time-night')
+    const money = document.getElementById('money')
+
+    timeDay.addEventListener('click',()=>{money.innerHTML = '新台幣2000元'})
+    timeNight.addEventListener('click',()=>{money.innerHTML = '新台幣2500元'})
         
 
     renderImage()
