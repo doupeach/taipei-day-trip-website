@@ -4,15 +4,12 @@ const url = window.location.href
 const splitedUrl = url.split('/')
 let id = splitedUrl[splitedUrl.length-1]
 
-// console.log('attr-id:',id)
-
 fetch(`${endpoint}/${id}`, {
     method: "GET",
     })
     .then((res) => res.json())
     .then(
         (res) => {
-        // console.log('data-fetched:',res)
         renderAttraction(res);
     })
     .catch(
@@ -84,17 +81,14 @@ function renderAttraction(res){
 
         function carouselStart(){
             isCarousel = true
-            console.log(isCarousel)
             const activeDot = document.getElementById(`dot${startIndex}`)
             const lastDot = document.getElementById(`dot${startIndex-1}`)
             const finalDot = document.getElementById(`dot${images.length-1}`)
-            // console.log('startIndex ',startIndex)
+
             if(startIndex === images.length-1){
-                // console.log('startIndex ',startIndex)
                 imageSrc = images[startIndex]
                 carouselPic.style.backgroundImage = `url(${imageSrc})`
                 startIndex = 0
-                // console.log('nextIndex ',startIndex)
                 activeDot.checked = true
                 lastDot.checked = false
             } else {
@@ -105,15 +99,12 @@ function renderAttraction(res){
                 if(startIndex !== 0){
                     lastDot.checked = false
                 }
-                console.log('actIndex ',startIndex)
                 imageSrc = images[startIndex]
                 carouselPic.style.backgroundImage = `url(${imageSrc})`
                 startIndex += 1
-                console.log('nextIndex ',startIndex)
                 activeDot.checked = true
             }
             isCarousel = false
-            console.log(isCarousel)
         }
         
             carousel.appendChild(carouselPic) 
@@ -126,12 +117,9 @@ function renderAttraction(res){
 
         nextBtn.addEventListener('click',(e)=>{
             e.preventDefault()
-            console.log('next clicked')
             Object.values(allDot).forEach(e => {
                     e.checked = false
             });
-
-            console.log(isCarousel)
             if(startIndex < images.length - 1){ 
                 startIndex = isCarousel ? startIndex + 1 : startIndex
             }
@@ -141,27 +129,20 @@ function renderAttraction(res){
             document.getElementById(`dot${startIndex}`).checked = true
             imageSrc = images[startIndex]
             carouselPic.style.backgroundImage = `url(${imageSrc})`
-            // console.log('afterclick ',startIndex)
             clearInterval(carouselReset)
             carouselReset = setInterval(carouselStart,2000)
             isCarousel = true
-            console.log(isCarousel)
-            console.log(startIndex)
         })
 
         lastBtn.addEventListener('click',(e)=>{
             e.preventDefault()
-            console.log('last clicked')
             Object.values(allDot).forEach(e => {
                 e.checked = false
             });
-            console.log(isCarousel)
             if(startIndex === images.length - 1){ 
-                console.log('last')
                 startIndex = isCarousel ? startIndex - 1 : startIndex
             }
             else if(startIndex !== 0){ 
-                console.log('between')
                 startIndex = isCarousel ? startIndex - 1 : startIndex - 1
             }
             else if(startIndex === 0){ startIndex = images.length - 1 }
@@ -169,15 +150,11 @@ function renderAttraction(res){
             document.getElementById(`dot${startIndex}`).checked = true
             imageSrc = images[startIndex]
             carouselPic.style.backgroundImage = `url(${imageSrc})`
-            // console.log('afterclick ',startIndex)
             clearInterval(carouselReset)
             carouselReset = setInterval(carouselStart,2000)
             isCarousel = true
-            console.log(isCarousel)
-            console.log(startIndex)
         })    
         }
-
 
     const timeDay = document.getElementById('time-day')
     const timeNight = document.getElementById('time-night')
@@ -186,7 +163,6 @@ function renderAttraction(res){
     timeDay.addEventListener('click',()=>{money.innerHTML = '新台幣2000元'})
     timeNight.addEventListener('click',()=>{money.innerHTML = '新台幣2500元'})
         
-
     renderImage()
     renderNameCatAndMRT()
     renderAttractionDetails()
