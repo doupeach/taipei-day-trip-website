@@ -21,7 +21,7 @@ my_pool = pooling.MySQLConnectionPool(
     host='localhost',
     user='root',
     password=PASSWORD,
-    database=DATABASE,auth_plugin='mysql_native_password'
+    database=DATABASE, auth_plugin='mysql_native_password'
 )
 
 
@@ -64,7 +64,7 @@ def attractions():
     db = my_pool.get_connection()
     cursor = db.cursor()
 
-    page = int(request.args.get("page",0))
+    page = int(request.args.get("page", 0))
     keyword = request.args.get("keyword", None)
     page_size = 12
     page_limit = page * page_size
@@ -123,7 +123,7 @@ def attractions():
                     "images": json.loads(result[9])
                 }
                 attractions_list.append(data)
-                
+
             if attractions_list == []:
                 return app.response_class(json.dumps(
                     {"error": True,
@@ -147,6 +147,78 @@ def attractions():
 
     finally:
         db.close()
+
+
+@app.route("/api/user", methods=["GET", "POST", "PATCH", "DELETE"])
+def user():
+    db = my_pool.get_connection()
+    cursor = db.cursor()
+
+    if (request.method == "GET"):
+        if "id" in session:
+            mem_dict = {
+                "id": session["id"],
+                "name":  session["name"],
+                "email":  session["email"]
+            }
+            stud_json = json.dumps(
+                {"data": mem_dict}, indent=2, ensure_ascii=False)
+        else:
+            stud_json = json.dumps(
+                {"data": None}, indent=2, ensure_ascii=False)
+        return stud_json, 200
+    elif (request.method == "POST"):
+        data = request.get_json()
+        sname = data['name']
+        semail = data['email']
+        spassword = data['password']
+        cursor = db.cursor()
+        sql = "SELECT `email` FROM `user` WHERE `email` = %s ;"
+        check_user = (semail,)
+        cursor.execute(sql, check_user)
+        new_check = 0
+        for check in cursor:
+            new_check = check[0]
+        if (new_check == semail):
+            cursor.close()
+            return jsonify({"error": True, "message": "此電子郵件已被註冊"}), 400
+        else:
+            sql = "INSERT INTO `user` (name, password, email) VALUES ( %s, %s, %s );"
+            member_data = (sname, spassword, semail)
+            cursor.execute(sql, member_data)
+            db.commit()
+            cursor.close()
+            return jsonify({"ok": True}), 200
+    elif (request.method == "PATCH"):
+        data = request.get_json()
+        uemail = data['email']
+        upassword = data['password']
+        cursor = db.cursor(buffered=True)
+        sql = "SELECT `id`, `name`, `email`, `password` FROM `user` WHERE `email` = %s AND `password` = %s ;"
+        check_data = (uemail, upassword)
+        cursor.execute(sql, check_data)
+        db.commit()
+        rid = 0
+        rname = 0
+        remail = 0
+        rpw = 0
+        for id, name, email, pw in cursor:
+            rid = id
+            rname = name
+            remail = email
+            rpw = pw
+        cursor.close()
+        if (remail == uemail and rpw == upassword):
+            session["id"] = rid
+            session["name"] = rname
+            session["email"] = remail
+            return jsonify({"ok": True}), 200
+        else:
+            return jsonify({"error": True, "message": "此帳號未註冊"}), 400
+    elif (request.method == "DELETE"):
+        session.pop("id", None)
+        stud_json = json.dumps({"ok": True}, indent=2, ensure_ascii=False)
+        return stud_json, 200
 
 
 # DO NOT MODIFY NOW

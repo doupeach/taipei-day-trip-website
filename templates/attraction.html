@@ -8,14 +8,60 @@
     <link rel="stylesheet" href="../static/css/reset.css">
     <link rel="stylesheet" href="../static/css/index.css">
     <link rel="stylesheet" href="../static/css/attraction.css">
-    <script src="../static/js/attraction.js"></script>
+    <link rel="stylesheet" href="../static/css/login.css">
 </head>
 <body>
+    <div class="popup" id="js-popup">
+        <div class="gate" id="js-gate">
+            <div class="gate__wrapper">
+                <h1 class="gate__title" id="js-gate__title">登入會員帳號</h1>
+                <button class="gate__close" id="js-gate__close"><img src="../static/img/icon_close.png" alt="關閉彈出視窗" /></button>
+
+                <div class="gate__form-wrapper" id="js-sign-in">
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-in__email" type="text" placeholder="輸入電子信箱" />
+                        <i class="gate__icon bx "></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-in__pwd" type="password" placeholder="輸入密碼" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <button class="gate__btn" id="js-sign-in__btn">登入帳號</button>
+                    <p class="gate__txt error" id="js-sign-in__message"></p>
+                    <button class="gate__switch-btn" id="js-sign-in__switch-btn">還沒有帳號？點此註冊</button>
+                </div>
+
+                <div class="gate__form-wrapper hidden" id="js-sign-up">
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__name" type="text" placeholder="輸入姓名" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__email" type="text" placeholder="輸入電子信箱" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__pwd" type="password" placeholder="輸入密碼" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <button class="gate__btn" id="js-sign-up__btn">註冊新帳號</button>
+                    <p class="gate__txt" id="js-sign-up__message"></p>
+                    <button class="gate__switch-btn" id="js-sign-up__switch-btn">已經有帳號了？點此登入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <div class="navbar">
         <div id="navbar-title"><a target="_self" href="/">台北一日遊</a></div>
         <div class="navbar-items">
             <div>預定行程</div>
-            <div>登入/註冊</div>
+            <div id="login-btn">登入/註冊</div>
         </div>
     </div>
     <div class="separator"></div>
@@ -71,5 +117,8 @@
     <div class="footer">
         <div>COPYRIGHT © 2021 台北一日遊</div>
     </div>
+
+    <script src="../static/js/attraction.js"></script>
+    <script src="../static/js/login.js"></script>
 </body>
 </html>
