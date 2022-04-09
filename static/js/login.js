@@ -23,7 +23,8 @@ const signUpPwd = document.getElementById("js-sign-up__pwd");
 const signUpMsg = document.getElementById("js-sign-up__message");
 const emailPattern = /^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/;
 
-// View
+let isLogin = false
+
 const resetGateInput = () => {
     gateInputs.forEach((input) => {
         removeOk(input);
@@ -119,6 +120,7 @@ const validateSignIn = () => {
     }
 }
 
+// handle input
 const setOk = (e) => {
     e.classList.add("ok");
 }
@@ -206,9 +208,11 @@ const hideBlock = (e) => {
 // //
 // showSchedules();
 
+
+// handle login
 gateBtn.addEventListener("click", () => {
     popup.style.pointerEvents = "all";
-    popup.style.opacity = "1";
+    popup.style.display = "flex";
     popup.style.transition = "1s";
     gate.style.transform = "translateY(80px)";
     gate.style.transition = "0.3s";
@@ -218,29 +222,29 @@ gateBtn.addEventListener("click", () => {
     resetGateInput();
 });
 
-gateCloseBtn?.addEventListener("click", () => {
+gateCloseBtn.addEventListener("click", () => {
     popup.style.pointerEvents = "none";
-    popup.style.opacity = "0";
+    popup.style.display = "none";
     popup.style.transition = "none";
     gate.style.transform = "translateY(-400px)";
     gate.style.transition = "none";
 });
 
-signInSwitchBtn?.addEventListener("click", () => {
+signInSwitchBtn.addEventListener("click", () => {
     gateTitle.textContent = "註冊會員帳號";
     showBlock(signUp);
     hideBlock(signIn);
     resetGateInput();
 });
 
-signUpSwitchBtn?.addEventListener("click", () => {
+signUpSwitchBtn.addEventListener("click", () => {
     gateTitle.textContent = "登入會員帳號";
     showBlock(signIn);
     hideBlock(signUp);
     resetGateInput();
 });
 
-signUpBtn?.addEventListener("click", async () => {
+signUpBtn.addEventListener("click", async () => {
     const name = signUpName.value.trim();
     const email = signUpEmail.value.trim();
     const pwd = signUpPwd.value.trim();
@@ -286,7 +290,7 @@ signUpBtn?.addEventListener("click", async () => {
     }
 });
 
-signInBtn?.addEventListener("click", async () => {
+signInBtn.addEventListener("click", async () => {
     const email = signInEmail.value.trim();
     const pwd = signInPwd.value.trim();
     const data = {
@@ -308,12 +312,13 @@ signInBtn?.addEventListener("click", async () => {
 
         if (result.ok) {
             popup.style.pointerEvents = "none";
-            popup.style.opacity = "0";
+            popup.style.display = "none";
             popup.style.transition = "1s";
             gate.style.transform = "translateY(-400px)";
             gate.style.transition = "0.3s";
             hideBlock(gateBtn);
             showBlock(signOutBtn);
+            isLogin = true
 
             const bookingOption = {
                 method: "GET",
@@ -321,18 +326,18 @@ signInBtn?.addEventListener("click", async () => {
                     "Content-Type": "application/json"
                 },
             };
-            const bookingResponse = await fetch("/api/booking", bookingOption);
-            const bookingPromise = await bookingResponse.json();
-            const bookingResult = await bookingPromise;
+            // const bookingResponse = await fetch("/api/booking", bookingOption);
+            // const bookingPromise = await bookingResponse.json();
+            // const bookingResult = await bookingPromise;
         
-            if (bookingResult.data.length) {
-                bookingNumber.textContent = bookingResult.data.length;
-                bookingIcon.style.transform = "scale(1)";
-            }
+            // if (bookingResult.data.length) {
+            //     bookingNumber.textContent = bookingResult.data.length;
+            //     bookingIcon.style.transform = "scale(1)";
+            // }
         
-            else {
-                bookingIcon.style.transform = "scale(0)";
-            }
+            // else {
+            //     bookingIcon.style.transform = "scale(0)";
+            // }
         }
 
         else if (result.error) {
@@ -344,7 +349,7 @@ signInBtn?.addEventListener("click", async () => {
     }
 });
 
-signOutBtn?.addEventListener("click", async () => {
+signOutBtn.addEventListener("click", async () => {
     const option = {
         method: "DELETE",
         headers: {
@@ -360,10 +365,11 @@ signOutBtn?.addEventListener("click", async () => {
         window.location.reload();
         showBlock(gateBtn);
         hideBlock(signOutBtn);
+        isLogin = false
     }
 });
 
-gateInputs?.forEach((input) => {
+gateInputs.forEach((input) => {
     input.addEventListener("focus", () => {
         removeOk(input);
         removeOkIcon(input);
@@ -372,7 +378,7 @@ gateInputs?.forEach((input) => {
     });
 });
 
-signUpName?.addEventListener("blur", () => {
+signUpName.addEventListener("blur", () => {
     if (signUpName.value.trim()) {
         setOkInput(signUpName);
     }
@@ -382,7 +388,7 @@ signUpName?.addEventListener("blur", () => {
     }
 });
 
-signUpEmail?.addEventListener("blur", () => {
+signUpEmail.addEventListener("blur", () => {
     if (emailPattern.test(signUpEmail.value.trim())) {
         setOkInput(signUpEmail);
     }
@@ -392,7 +398,7 @@ signUpEmail?.addEventListener("blur", () => {
     }
 });
 
-signUpPwd?.addEventListener("blur", () => {
+signUpPwd.addEventListener("blur", () => {
     if (signUpPwd.value.trim()) {
         setOkInput(signUpPwd);
     }
@@ -402,7 +408,7 @@ signUpPwd?.addEventListener("blur", () => {
     }
 });
 
-signInEmail?.addEventListener("blur", () => {
+signInEmail.addEventListener("blur", () => {
     if (emailPattern.test(signInEmail.value.trim())) {
         removeError(signInEmail);
         removeErrorIcon(signInEmail);
@@ -414,7 +420,7 @@ signInEmail?.addEventListener("blur", () => {
     }
 });
 
-signInPwd?.addEventListener("blur", () => {
+signInPwd.addEventListener("blur", () => {
     if (signInPwd.value.trim()) {
         removeError(signInPwd);
         removeErrorIcon(signInPwd);
@@ -443,7 +449,7 @@ bookingBtn?.addEventListener("click", async () => {
 
     else{
         popup.style.pointerEvents = "all";
-        popup.style.opacity = "1";
+        popup.style.display = "flex";
         popup.style.transition = "1s";
         gate.style.transform = "translateY(80px)";
         gate.style.transition = "0.3s";
@@ -453,3 +459,27 @@ bookingBtn?.addEventListener("click", async () => {
         resetGateInput();
     }
 });
+  
+const checkLoginStatus = async () => {
+    const option = {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    };
+    const signInResponse = await fetch("/api/user", option);
+    const signInPromise = await signInResponse.json();
+    const signInResult = await signInPromise;
+    
+    if (signInResult.data) {
+        hideBlock(gateBtn);
+        showBlock(signOutBtn);
+    }
+  
+    else{
+        showBlock(gateBtn);
+        hideBlock(signOutBtn);
+    }
+  }
+  
+  checkLoginStatus()

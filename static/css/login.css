@@ -1,3 +1,7 @@
+#login-btn, #booking {
+  cursor: pointer;
+}
+
 .hidden {
     display: none !important;
 }
@@ -5,7 +9,7 @@
 .popup {
     display: -webkit-box;
     display: -ms-flexbox;
-    display: flex;
+    display: none;
     -webkit-box-pack: center;
         -ms-flex-pack: center;
             justify-content: center;
@@ -17,7 +21,7 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.25);
-    opacity: 0;
+    /* opacity: 0; */
     -webkit-transition: 1s;
     transition: 1s;
     pointer-events: none;
@@ -134,7 +138,7 @@
     pointer-events: none;
   }
   
-  .popup .gate__wrapper .gate__form-wrapper .gate__icon.bx-check-circle {
+  .popup .gate__wrapper .gate__form-wrapper .gate__icon .bx-check-circle {
     color: #00CD28;
     -webkit-transform: scale(1);
             transform: scale(1);
@@ -142,7 +146,7 @@
     transition: 0.3s;
   }
   
-  .popup .gate__wrapper .gate__form-wrapper .gate__icon.bx-x-circle {
+  .popup .gate__wrapper .gate__form-wrapper .gate__icon .bx-x-circle {
     color: #FF1B1B;
     -webkit-transform: scale(1);
             transform: scale(1);

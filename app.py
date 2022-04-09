@@ -6,6 +6,7 @@ from flask import *
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.secret_key='asbs'
 # app.config['Access-Control-Allow-Origin'] = '*'
 
 # add by me
@@ -29,7 +30,7 @@ my_pool = pooling.MySQLConnectionPool(
 def getAttraction(attractionId):
 
     db = my_pool.get_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(buffered=True)
     cursor.execute("SELECT * FROM attractions WHERE id = '%s'" %
                    (attractionId))
     result = cursor.fetchone()
@@ -62,7 +63,7 @@ def getAttraction(attractionId):
 @app.route("/api/attractions")
 def attractions():
     db = my_pool.get_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(buffered=True)
 
     page = int(request.args.get("page", 0))
     keyword = request.args.get("keyword", None)
@@ -152,7 +153,7 @@ def attractions():
 @app.route("/api/user", methods=["GET", "POST", "PATCH", "DELETE"])
 def user():
     db = my_pool.get_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(buffered=True)
 
     if (request.method == "GET"):
         if "id" in session:
@@ -172,7 +173,7 @@ def user():
         sname = data['name']
         semail = data['email']
         spassword = data['password']
-        cursor = db.cursor()
+        cursor = db.cursor(buffered=True)
         sql = "SELECT `email` FROM `user` WHERE `email` = %s ;"
         check_user = (semail,)
         cursor.execute(sql, check_user)
@@ -181,7 +182,7 @@ def user():
             new_check = check[0]
         if (new_check == semail):
             cursor.close()
-            return jsonify({"error": True, "message": "此電子郵件已被註冊"}), 400
+            return jsonify({"error": True, "message": "The email has already been registered."}), 400
         else:
             sql = "INSERT INTO `user` (name, password, email) VALUES ( %s, %s, %s );"
             member_data = (sname, spassword, semail)
@@ -212,12 +213,19 @@ def user():
             session["id"] = rid
             session["name"] = rname
             session["email"] = remail
+            print(session["id"])
+            print(session["name"])
+            print(session["email"])
+            print('logged in')
             return jsonify({"ok": True}), 200
         else:
             return jsonify({"error": True, "message": "此帳號未註冊"}), 400
     elif (request.method == "DELETE"):
         session.pop("id", None)
+        session.pop("name", None)
+        session.pop("email", None)
         stud_json = json.dumps({"ok": True}, indent=2, ensure_ascii=False)
+        print('logged out')
         return stud_json, 200
 
 
