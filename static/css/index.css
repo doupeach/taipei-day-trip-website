@@ -155,6 +155,10 @@
   border-radius: 5px;
 }
 
+.link {
+  text-decoration: none;
+}
+
 .card img {
   width: 268px;
   height: 160px;
@@ -192,10 +196,6 @@
   font-size: 16px;
   line-height: 13px;
   color: #757575;
-}
-
-.burger-menu {
-  display: none;
 }
 
 .footer {

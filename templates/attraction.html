@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taipei Day Trip</title>
+    <link rel="stylesheet" href="../static/css/reset.css">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/css/attraction.css">
+    <link rel="stylesheet" href="../static/css/login.css">
+</head>
+<body>
+    <div class="popup" id="js-popup">
+        <div class="gate" id="js-gate">
+            <div class="gate__wrapper">
+                <h1 class="gate__title" id="js-gate__title">登入會員帳號</h1>
+                <button class="gate__close" id="js-gate__close"><img src="../static/images/icon_close.png" alt="關閉彈出視窗" /></button>
+
+                <div class="gate__form-wrapper" id="js-sign-in">
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-in__email" type="text" placeholder="輸入電子信箱" />
+                        <i class="gate__icon bx "></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-in__pwd" type="password" placeholder="輸入密碼" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <button class="gate__btn" id="js-sign-in__btn">登入帳號</button>
+                    <p class="gate__txt error" id="js-sign-in__message"></p>
+                    <button class="gate__switch-btn" id="js-sign-in__switch-btn">還沒有帳號？點此註冊</button>
+                </div>
+
+                <div class="gate__form-wrapper hidden" id="js-sign-up">
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__name" type="text" placeholder="輸入姓名" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__email" type="text" placeholder="輸入電子信箱" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__pwd" type="password" placeholder="輸入密碼" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <button class="gate__btn" id="js-sign-up__btn">註冊新帳號</button>
+                    <p class="gate__txt" id="js-sign-up__message"></p>
+                    <button class="gate__switch-btn" id="js-sign-up__switch-btn">已經有帳號了？點此登入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="navbar">
+        <div id="navbar-title"><a target="_self" href="/">台北一日遊</a></div>
+        <div class="navbar-items">
+            <div>預定行程</div>
+            <div id="login-btn">登入/註冊</div>
+            <div class="navbar__btn hidden" id="js-navbar__sign-out-btn">登出系統</div>
+        </div>
+    </div>
+    <div class="separator"></div>
+
+
+    <div id="carouselAndBooktour">
+        <div id="carousel">
+            <img id="last-btn" src="../static/images/btn_leftArrow.png"></img>
+            <img id="next-btn" src="../static/images/btn_rightArrow.png"></img>
+            <div id="dots"></div>
+        </div>
+        
+        <div id="book-tour">
+            <div id="book-tour-names"></div>
+
+            <div class="date-picker">
+                <form class="booking-box">
+                    <li>訂購導覽行程</li>
+                    <li id="sub-li">以此景點為中心的一日行程，帶您探索城市角落故事</li>
+                    <li>選擇日期：
+                        <input class="input-date" id="date" type="date" required></li>
+                    <li>選擇時間：
+                        <div class="sub-data">
+                            <label for="time-day" class="time-item">
+                                <input class="time-input" id="time-day" type="radio" name="time" value="day" checked>
+                                <div class="radio-radio"></div>上半天
+                            </label>
+                            <label for="time-night" class="time-item">
+                                <input class="time-input" id="time-night" type="radio" name="time" value="night">
+                                <div class="radio-radio"></div>下半天
+                            </label>
+                        </div>
+                    </li>
+                    <li>導覽費用：
+                        <div id="money" class="sub-data">新台幣2000元</div>
+                    </li>
+                    <div>
+                        <button onclick="booking_submit();" type="button" class="booking-btn">開始預訂行程</button>
+                        <div id="check-date" style="display: none;margin: -9px 40px 5px -10px;align-items: center; color: red;">尚未選擇日期</div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="separator-short"></div>
+    <div id="attraction-details">
+        <div id="description"></div>
+        <div>景點地址：</div><div id="address"></div>
+        <div >交通方式：</div><div id="transport"></div>
+    </div>
+
+    <div class="footer">
+        <div>COPYRIGHT © 2021 台北一日遊</div>
+    </div>
+
+    <script src="../static/js/attraction.js"></script>
+    <script src="../static/js/login.js"></script>
+</body>
+</html>

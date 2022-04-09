@@ -6,6 +6,7 @@ from flask import *
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
+app.secret_key='asbs'
 # app.config['Access-Control-Allow-Origin'] = '*'
 
 # add by me
@@ -21,7 +22,7 @@ my_pool = pooling.MySQLConnectionPool(
     host='localhost',
     user='root',
     password=PASSWORD,
-    database=DATABASE,auth_plugin='mysql_native_password'
+    database=DATABASE, auth_plugin='mysql_native_password'
 )
 
 
@@ -29,7 +30,7 @@ my_pool = pooling.MySQLConnectionPool(
 def getAttraction(attractionId):
 
     db = my_pool.get_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(buffered=True)
     cursor.execute("SELECT * FROM attractions WHERE id = '%s'" %
                    (attractionId))
     result = cursor.fetchone()
@@ -62,9 +63,9 @@ def getAttraction(attractionId):
 @app.route("/api/attractions")
 def attractions():
     db = my_pool.get_connection()
-    cursor = db.cursor()
+    cursor = db.cursor(buffered=True)
 
-    page = int(request.args.get("page",0))
+    page = int(request.args.get("page", 0))
     keyword = request.args.get("keyword", None)
     page_size = 12
     page_limit = page * page_size
@@ -123,7 +124,7 @@ def attractions():
                     "images": json.loads(result[9])
                 }
                 attractions_list.append(data)
-                
+
             if attractions_list == []:
                 return app.response_class(json.dumps(
                     {"error": True,
@@ -147,6 +148,85 @@ def attractions():
 
     finally:
         db.close()
+
+
+@app.route("/api/user", methods=["GET", "POST", "PATCH", "DELETE"])
+def user():
+    db = my_pool.get_connection()
+    cursor = db.cursor(buffered=True)
+
+    if (request.method == "GET"):
+        if "id" in session:
+            mem_dict = {
+                "id": session["id"],
+                "name":  session["name"],
+                "email":  session["email"]
+            }
+            stud_json = json.dumps(
+                {"data": mem_dict}, indent=2, ensure_ascii=False)
+        else:
+            stud_json = json.dumps(
+                {"data": None}, indent=2, ensure_ascii=False)
+        return stud_json, 200
+    elif (request.method == "POST"):
+        data = request.get_json()
+        sname = data['name']
+        semail = data['email']
+        spassword = data['password']
+        cursor = db.cursor(buffered=True)
+        sql = "SELECT `email` FROM `user` WHERE `email` = %s ;"
+        check_user = (semail,)
+        cursor.execute(sql, check_user)
+        new_check = 0
+        for check in cursor:
+            new_check = check[0]
+        if (new_check == semail):
+            cursor.close()
+            return jsonify({"error": True, "message": "The email has already been registered."}), 400
+        else:
+            sql = "INSERT INTO `user` (name, password, email) VALUES ( %s, %s, %s );"
+            member_data = (sname, spassword, semail)
+            cursor.execute(sql, member_data)
+            db.commit()
+            cursor.close()
+            return jsonify({"ok": True}), 200
+    elif (request.method == "PATCH"):
+        data = request.get_json()
+        uemail = data['email']
+        upassword = data['password']
+        cursor = db.cursor(buffered=True)
+        sql = "SELECT `id`, `name`, `email`, `password` FROM `user` WHERE `email` = %s AND `password` = %s ;"
+        check_data = (uemail, upassword)
+        cursor.execute(sql, check_data)
+        db.commit()
+        rid = 0
+        rname = 0
+        remail = 0
+        rpw = 0
+        for id, name, email, pw in cursor:
+            rid = id
+            rname = name
+            remail = email
+            rpw = pw
+        cursor.close()
+        if (remail == uemail and rpw == upassword):
+            session["id"] = rid
+            session["name"] = rname
+            session["email"] = remail
+            print(session["id"])
+            print(session["name"])
+            print(session["email"])
+            print('logged in')
+            return jsonify({"ok": True}), 200
+        else:
+            return jsonify({"error": True, "message": "此帳號未註冊"}), 400
+    elif (request.method == "DELETE"):
+        session.pop("id", None)
+        session.pop("name", None)
+        session.pop("email", None)
+        stud_json = json.dumps({"ok": True}, indent=2, ensure_ascii=False)
+        print('logged out')
+        return stud_json, 200
 
 
 # DO NOT MODIFY NOW
