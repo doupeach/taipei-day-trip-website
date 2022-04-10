@@ -1,0 +1,136 @@
+.user_check{
+    text-align: left;
+    width: 61%;
+    margin: 46px 58% 35px 21%;
+    justify-content: center;
+    line-height: 24px;
+    font-weight: 700;
+    font-size: 19px;
+}
+.checking_box{
+    font-weight: 700;
+    grid-template-rows: max-content;
+    text-align: left;
+    min-width: 800px;
+    border-radius: 5px;
+    padding: 5px 0px;
+}
+.check_img{
+    display: block;
+    max-width: 266px;
+    min-width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+.book_delete_img{
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+}
+.check_subtitle{
+    text-align: left;
+    margin-left: 15px;
+    width: 38%;
+    position: relative;
+}
+.checking{
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.check_data_box{
+    text-align: left;
+    width: 61%;
+    margin: 46px 58% 15px 21%;
+    justify-content: center;
+    line-height: 24px;
+    font-weight: 400;
+}
+.check_input{
+    margin-bottom: 2%;
+    height: 38px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #CCCCCC;
+    font-size: 16px;
+    margin: 5px 0;
+    padding: 1px 0 0 10px;
+    box-shadow: 1px 1px 6px -2px #cccccc;
+}
+.total{
+    display: inline-grid;
+    margin: 0px 0 15px 78%;
+    justify-content: right;
+}
+.total_btn{
+    background-color: #448899;
+    color: #FFFFFF;
+    width: 154px;
+    height: 36px;
+    border-style: none;
+    border-radius: 5px;
+    font-size: 19px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.no_booking{
+    text-align: left;
+    width: 61%;
+    margin: 35px 58% 35px 21%;
+    justify-content: center;
+    font-size: 16px;
+    font-style: normal;
+}
+
+.checking_box div{
+    display: flex;
+    align-items: center;
+    margin: 14.5px 20px;
+}
+.checking_box div p{
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.tpfield {
+    height: 40px;
+    width: 300px;
+    border: 1px solid gray;
+    margin: 5px 0;
+    padding: 5px;
+}
+
+.book_new_area{
+    text-align: left;
+    border-top: 1px solid #E8E8E8;
+    margin: 30px 0 30px 0;
+    justify-content: center;
+}
+
+@media screen and (max-width: 1200px){
+    .checking_box{min-width: revert; width: 100%;}
+}
+@media screen and (max-width: 850px){
+    .check_subtitle {width: revert;}
+    .checking_box{min-width: revert;}
+}
+@media screen and (max-width: 600px){
+    .total{margin: 0px 0 15px 25%;}
+}
+@media screen and (max-width: 570px){
+    .check_img{max-width: 360px; min-width:360px; border-radius:5px;}
+    .check_subtitle{max-width: 340px; min-width: 340px;}
+    .checking_box{max-width: 340px;min-width:340px;}
+    .check_data_box{width: 93%; margin: 46px 58% 15px 5%;}
+    .user_check{width: 93%;margin: 46px 58% 35px 5%;}
+}
+@media screen and (max-width: 360px){
+    .total{margin: 0px 0 15px 25%;}
+}

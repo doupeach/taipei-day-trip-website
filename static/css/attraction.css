@@ -287,6 +287,12 @@ li {
   color: #666666;
 }
 
+#check_date {
+  display: none;
+  margin: -20px 0 0 60%;
+  color: red;
+}
+
 @media (max-width: 1200px) {
   #carouselAndBooktour {
     padding: 0 10px;
