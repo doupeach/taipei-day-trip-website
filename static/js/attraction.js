@@ -169,8 +169,6 @@ function renderAttraction(res){
     renderAttractionDetails()
 }
 
-
-
 function bookingSubmit(){
     const check_date = document.getElementById("check_date");
     let date = document.getElementById("date").value;
@@ -195,22 +193,23 @@ function bookingSubmit(){
 }
 
 function bookRequest(){
-    let name = document.getElementsByClassName("attraction-name").textContent;
-    let money = document.getElementById("money").textContent;
+    let name = document.getElementsByClassName("attraction-name")[0].textContent;
+    let price = document.getElementById("money").textContent;
     let address = document.getElementById("attr-address").textContent;
+    let date = document.getElementById("date").value;
     if(money == "新台幣2000元"){
-        time = "afternoon"; money = 2000;
+        time = "afternoon"; price = 2000;
     } else {
-        time = "evening"; money = 2500;
+        time = "evening"; price = 2500;
     }
     let toSend = {
-        id : url,
-        attr_name : name,
+        attractionId : url.split('attraction/')[1],
+        name : name,
         address : address,
-        img : renderData.images.split(',')[0],
+        image : renderData.images.split(',')[0],
         date : date,
         time : time,
-        money : money
+        price : price
     }
     fetch("/api/booking", {
         method: "POST",

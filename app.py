@@ -54,8 +54,7 @@ class ReallyMySQLConnectionPool(mysql.connector.pooling.MySQLConnectionPool):
         self._semaphore.release()
 
 
-cnxpool = ReallyMySQLConnectionPool(**mysql_config,
-                                    connection_timeout=30)
+cnxpool = ReallyMySQLConnectionPool(**mysql_config,connection_timeout=30)
 
 
 @contextmanager
@@ -96,7 +95,6 @@ if __name__ == '__main__':
             pool.submit(t, (i))
 
     print(time.time() - s)
-
 
 @app.route("/api/attraction/<attractionId>")
 def getAttraction(attractionId):
@@ -314,10 +312,10 @@ def api_booking():
 					"address": session["attr_address"],
 					"image": session["attr_img"]
 				}
-				mydict = {"attraction": attraction_dict,
+				get_dict = {"attraction": attraction_dict,
 				    "date": session["date"], "time": session["time"], "price": session["price"]}
 
-				stud_json = json.dumps({"data": mydict}, indent=2, ensure_ascii=False)
+				stud_json = json.dumps({"data": get_dict}, indent=2, ensure_ascii=False)
 				return stud_json, 200
 			else:
 				return jsonify({"data": None}), 200
@@ -327,13 +325,13 @@ def api_booking():
 	elif(request.method == "POST"):
 		if "id" in session:
 			data = request.get_json()
-			session["attractionId"] = data["id"]
-			session["attr_name"] = data["attr_name"]
+			session["attractionId"] = data["attractionId"]
+			session["attr_name"] = data["name"]
 			session["attr_address"] = data["address"]
-			session["attr_img"] = data["img"]
+			session["attr_img"] = data["image"]
 			session["date"] = data["date"]
 			session["time"] = data["time"]
-			session["price"] = data["money"]
+			session["price"] = data["price"]
 			return jsonify({"ok": True}), 200
 		elif "id" not in session:
 			return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403

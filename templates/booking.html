@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="../static/css/reset.css">
     <link rel="stylesheet" href="../static/css/index.css">
     <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="../static/css/booking.css">
     
 </head>
 <body>
@@ -60,7 +61,7 @@
     <div class="navbar">
         <div id="navbar-title"><a target="_self" href="/">台北一日遊</a></div>
         <div class="navbar-items">
-            <div id="bookings">預定行程</div>
+            <div id="schedule">預定行程</div>
             <div id="login-btn">登入/註冊</div>
             <div class="navbar__btn hidden" id="js-navbar__sign-out-btn">登出系統</div>
         </div>
@@ -68,47 +69,56 @@
     <div id="book_welcome" class="user_check"></div>
     <div id="yes_booking">
         <div class="checking">
-            <div id="slides" class="slides" style="top: -7px;"><img id="book_attr_img" class="check_img"></div>
+            <div id="slides" class="slides"><img id="book_attr_img" class="check_img"></div>
             <div class="check_subtitle">
                 <img class="book_delete_img" src="/static/images/icon_delete.png" onclick="delete_booking();">
-                <div id="book_attr_name" style="margin: 0 0 15px 20px;color: #448899;"></div>
+                <div id="book_attr_name"></div>
                 <div class="checking_box">
-                    <div>日期：<p id="book_attr_date"></p></div>
-                    <div>時間：<p id="book_attr_time"></p></div>
-                    <div>費用：<p id="book_attr_price"></p></div>
-                    <div>地點：<p id="book_attr_address"></p></div>
+                    <div>日期：<span id="book_attr_date"></span></div>
+                    <div>時間：<span id="book_attr_time"></span></div>
+                    <div>費用：<span id="book_attr_price"></span></div>
+                    <div>地點：<span id="book_attr_address"></span></div>
                 </div>
             </div>
         </div>
         <div class="check_data_box">
             <hr class="book_new_area">
             <form>
-                <div style="font-size: 19px; font-weight: 700;">您的聯絡資訊</div>
-                <div>聯絡姓名：<input id="contact_name" class="check_input" type="text" autocomplete="off" placeholder="輸入姓名" required></div>
-                <div>連絡信箱：<input id="contact_email" class="check_input" type="email" autocomplete="off" placeholder="輸入電子郵件" required></div>
-                <div>手機號碼：<input id="contact_phone" class="check_input" type="text" autocomplete="off" placeholder="輸入手機號碼" maxlength="10" oninput="value=value.replace(/[^\d]/g,'')" required></div>
+                <div id="contact-info">您的聯絡資訊</div>
+                <div class="contact-inputs">聯絡姓名：<input id="contact_name" class="check_input" type="text" autocomplete="off" placeholder="請輸入姓名" required></div>
+                <div class="contact-inputs">連絡信箱：<input id="contact_email" class="check_input" type="email" autocomplete="off" placeholder="請輸入電子郵件" required></div>
+                <div class="contact-inputs">手機號碼：<input id="contact_phone" class="check_input" type="text" autocomplete="off" placeholder="請輸入手機號碼" maxlength="10" oninput="value=value.replace(/[^\d]/g,'')" required></div>
+                <div id="contact-remind">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
                 <hr class="book_new_area">
-                <div style="font-size: 19px; font-weight: 700;">信用卡付款資訊</div>    
+                <div id="card-info">信用卡付款資訊</div>    
                 <div class="form-group card-number-group">
                     <div for="card-number" ><span id="cardtype"></span>
                         卡片號碼：
-                        <div class="check_input card-number" id="card-number"></div></div>
+                        <input class="check_input card-number" id="card-number" placeholder="**** **** **** ****"></input>
+                    </div>
                 </div>
                 <div class="form-group expiration-date-group">
                     <div for="expiration-date">
                         過期時間：
-                        <div class="check_input expiration-date" id="tappay-expiration-date"></div></div>                    
+                        <input class="check_input expiration-date" id="tappay-expiration-date" placeholder="MM / YY"></input>
+                    </div>                    
                 </div>
                 <div class="form-group cvc-group">
                     <div for="cvc" class="control-label">
                         驗證密碼：
-                        <div class="check_input cvc" id="card-cvc"></div></div>
+                        <input class="check_input cvc" id="card-cvc" placeholder="CVV"></input>
+                    </div>
                 </div>
                 
                 <hr class="book_new_area">
                 <div class="total">
-                    <div style="margin: 43px 0 25px 0;">總價：<div id="total_price"></div></div>
-                    <div><button type="submit" class="total_btn" style="margin-bottom: 62px; height: 36px; width: 173px;">確認訂購並付款</button></div>
+                    <div id="total_title">
+                        總價：<div id="total_price">
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="total_btn">確認訂購並付款</button>
+                </div>
                 </div> 
             </form>         
         </div>
