@@ -2,11 +2,13 @@ from dotenv import load_dotenv
 import os
 from mysql.connector import pooling
 import mysql.connector
+from threading import Semaphore
+from contextlib import contextmanager
 from flask import *
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.secret_key='asbs'
+app.secret_key = 'asbs'
 # app.config['Access-Control-Allow-Origin'] = '*'
 
 # add by me
@@ -25,6 +27,74 @@ my_pool = pooling.MySQLConnectionPool(
     database=DATABASE, auth_plugin='mysql_native_password'
 )
 
+mysql_config = {
+    'pool_name':'my_pool',
+    'pool_size':10,
+    'pool_reset_session':True,
+    'host':'localhost',
+    'user':'root',
+    'password':PASSWORD,
+    'database':DATABASE,
+    'auth_plugin':'mysql_native_password'
+}
+
+# prevent pool exhausted
+class ReallyMySQLConnectionPool(mysql.connector.pooling.MySQLConnectionPool):
+    def __init__(self, **mysql_config):
+        pool_size = mysql_config.get('pool_size', 10)
+        self._semaphore = Semaphore(pool_size)
+        super().__init__(**mysql_config)
+
+    def get_connection(self):
+        self._semaphore.acquire()
+        return super().get_connection()
+
+    def put_connection(self, con):
+        con.close()  # con是PooledMySQLConnection的实例
+        self._semaphore.release()
+
+
+cnxpool = ReallyMySQLConnectionPool(**mysql_config,connection_timeout=30)
+
+
+@contextmanager
+def get_cursor():
+    try:
+        con = cnxpool.get_connection()
+        cursor = con.cursor()
+        yield cursor
+    except mysql.connector.Error as err:
+        print('errno={}'.format(err))
+
+    finally:
+        cursor.close()
+        cnxpool.put_connection(con)
+
+
+class PyMysql(object):
+    @staticmethod
+    def get_all(sql):
+        with get_cursor() as cursor:
+            cursor.execute(sql)
+            return cursor.fetchall()
+
+
+if __name__ == '__main__':
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+
+    def t(n):
+        r1 = PyMysql.get_all("select * from TABLE")
+        print(str(n) + str(r1))
+
+
+    s = time.time()
+    with ThreadPoolExecutor(max_workers=15) as pool:
+        for i in range(20):
+            pool.submit(t, (i))
+
+    print(time.time() - s)
 
 @app.route("/api/attraction/<attractionId>")
 def getAttraction(attractionId):
@@ -167,6 +237,7 @@ def user():
         else:
             stud_json = json.dumps(
                 {"data": None}, indent=2, ensure_ascii=False)
+        db.close()
         return stud_json, 200
     elif (request.method == "POST"):
         data = request.get_json()
@@ -181,14 +252,14 @@ def user():
         for check in cursor:
             new_check = check[0]
         if (new_check == semail):
-            cursor.close()
+            db.close()
             return jsonify({"error": True, "message": "The email has already been registered."}), 400
         else:
             sql = "INSERT INTO `user` (name, password, email) VALUES ( %s, %s, %s );"
             member_data = (sname, spassword, semail)
             cursor.execute(sql, member_data)
             db.commit()
-            cursor.close()
+            db.close()
             return jsonify({"ok": True}), 200
     elif (request.method == "PATCH"):
         data = request.get_json()
@@ -208,7 +279,7 @@ def user():
             rname = name
             remail = email
             rpw = pw
-        cursor.close()
+        db.close()
         if (remail == uemail and rpw == upassword):
             session["id"] = rid
             session["name"] = rname
@@ -226,7 +297,60 @@ def user():
         session.pop("email", None)
         stud_json = json.dumps({"ok": True}, indent=2, ensure_ascii=False)
         print('logged out')
+        db.close()
         return stud_json, 200
+
+
+@app.route("/api/booking", methods=["GET", "POST", "DELETE"])
+def api_booking():
+	if(request.method == "GET"):
+		if "id" in session:
+			if "attractionId" in session:
+				attraction_dict = {
+					"id": session["attractionId"],
+					"name": session["attr_name"],
+					"address": session["attr_address"],
+					"image": session["attr_img"]
+				}
+				get_dict = {"attraction": attraction_dict,
+				    "date": session["date"], "time": session["time"], "price": session["price"]}
+
+				stud_json = json.dumps({"data": get_dict}, indent=2, ensure_ascii=False)
+				return stud_json, 200
+			else:
+				return jsonify({"data": None}), 200
+		else:
+			return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
+
+	elif(request.method == "POST"):
+		if "id" in session:
+			data = request.get_json()
+			session["attractionId"] = data["attractionId"]
+			session["attr_name"] = data["name"]
+			session["attr_address"] = data["address"]
+			session["attr_img"] = data["image"]
+			session["date"] = data["date"]
+			session["time"] = data["time"]
+			session["price"] = data["price"]
+			return jsonify({"ok": True}), 200
+		elif "id" not in session:
+			return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
+		else:
+			return jsonify({"error": True, "message": "檔案建立失敗"}), 400
+
+	elif(request.method == "DELETE"):
+		if "id" in session:
+			session.pop("attractionId", None)
+			session.pop("attr_name", None)
+			session.pop("attr_address", None)
+			session.pop("attr_img", None)
+			session.pop("date", None)
+			session.pop("time", None)
+			session.pop("price", None)
+			return jsonify({"ok":True}), 200
+		else:
+			return jsonify({"error": True, "message":"未登入系統，拒絕存取"}), 403
+
 
 
 # DO NOT MODIFY NOW

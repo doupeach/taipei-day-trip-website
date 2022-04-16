@@ -13,7 +13,6 @@ const ajax = (url) => {
     .then((res) => res.json())
     .then(
       (res) => {
-      console.log('fetched:',res)
       render(res);
     })
     .catch(
@@ -85,15 +84,12 @@ function handleSearch(){
    
     fetch(`${endpoint}?keyword=${searchKeyword}`)
     .then(res => {
-      console.log(res)
       if(res.status === 400){
         return res.json().then(res =>{
-          console.log(res)
           cardsContainer.innerHTML = res.message})
       } else 
       if(res.ok){
         return res.json().then(res => {
-          console.log(res)
           render(res)})}
     })
     .catch(err => {

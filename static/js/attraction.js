@@ -3,13 +3,14 @@ const endpoint = '/api/attraction'
 const url = window.location.href
 const splitedUrl = url.split('/')
 let id = splitedUrl[splitedUrl.length-1]
-
+let renderData
 fetch(`${endpoint}/${id}`, {
     method: "GET",
     })
     .then((res) => res.json())
     .then(
         (res) => {
+        renderData = res.data
         renderAttraction(res);
     })
     .catch(
@@ -167,3 +168,59 @@ function renderAttraction(res){
     renderNameCatAndMRT()
     renderAttractionDetails()
 }
+
+function bookingSubmit(){
+    const check_date = document.getElementById("check_date");
+    let date = document.getElementById("date").value;
+    let src="/api/user";
+    const login = document.getElementById("login-btn");
+    fetch(src).then(function (response) {
+        return response.json();
+    }).then(function (result) {
+        if(result["data"] != null){
+            if(date != ""){
+                check_date.style.display="none";
+                bookRequest();
+            }
+            else{
+                check_date.style.display="flex";
+            }
+        }
+        else{
+            login.click();            
+        }
+    })
+}
+
+function bookRequest(){
+    let name = document.getElementsByClassName("attraction-name")[0].textContent;
+    let price = document.getElementById("money").textContent;
+    let address = document.getElementById("attr-address").textContent;
+    let date = document.getElementById("date").value;
+    if(money == "新台幣2000元"){
+        time = "afternoon"; price = 2000;
+    } else {
+        time = "evening"; price = 2500;
+    }
+    let toSend = {
+        attractionId : url.split('attraction/')[1],
+        name : name,
+        address : address,
+        image : renderData.images.split(',')[0],
+        date : date,
+        time : time,
+        price : price
+    }
+    fetch("/api/booking", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json;"
+        },
+        body: JSON.stringify(toSend)
+    }).then(function (response){
+        if(response.status == 200){
+            window.location.replace("/booking");
+        }
+    })
+}
+

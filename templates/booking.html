@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taipei Day Trip</title>
+    <link rel="stylesheet" href="../static/css/reset.css">
+    <link rel="stylesheet" href="../static/css/index.css">
+    <link rel="stylesheet" href="../static/css/login.css">
+    <link rel="stylesheet" href="../static/css/booking.css">
+    
+</head>
+<body>
+    <div class="popup" id="js-popup">
+        <div class="gate" id="js-gate">
+            <div class="gate__wrapper">
+                <h1 class="gate__title" id="js-gate__title">登入會員帳號</h1>
+                <button class="gate__close" id="js-gate__close"><img src="../static/images/icon_close.png" alt="關閉彈出視窗" /></button>
+
+                <div class="gate__form-wrapper" id="js-sign-in">
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-in__email" type="text" placeholder="輸入電子信箱" />
+                        <i class="gate__icon bx "></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-in__pwd" type="password" placeholder="輸入密碼" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <button class="gate__btn" id="js-sign-in__btn">登入帳號</button>
+                    <p class="gate__txt error" id="js-sign-in__message"></p>
+                    <button class="gate__switch-btn" id="js-sign-in__switch-btn">還沒有帳號？點此註冊</button>
+                </div>
+
+                <div class="gate__form-wrapper hidden" id="js-sign-up">
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__name" type="text" placeholder="輸入姓名" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__email" type="text" placeholder="輸入電子信箱" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <div class="gate__input-wrapper">
+                        <input class="gate__input" id="js-sign-up__pwd" type="password" placeholder="輸入密碼" />
+                        <i class="gate__icon bx"></i>
+                    </div>
+
+                    <button class="gate__btn" id="js-sign-up__btn">註冊新帳號</button>
+                    <p class="gate__txt" id="js-sign-up__message"></p>
+                    <button class="gate__switch-btn" id="js-sign-up__switch-btn">已經有帳號了？點此登入</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navbar">
+        <div id="navbar-title"><a target="_self" href="/">台北一日遊</a></div>
+        <div class="navbar-items">
+            <div id="schedule">預定行程</div>
+            <div id="login-btn">登入/註冊</div>
+            <div class="navbar__btn hidden" id="js-navbar__sign-out-btn">登出系統</div>
+        </div>
+    </div>
+    <div id="book_welcome" class="user_check"></div>
+    <div id="yes_booking">
+        <div class="checking">
+            <div id="slides" class="slides"><img id="book_attr_img" class="check_img"></div>
+            <div class="check_subtitle">
+                <img class="book_delete_img" src="/static/images/icon_delete.png" onclick="delete_booking();">
+                <div id="book_attr_name"></div>
+                <div class="checking_box">
+                    <div>日期：<span id="book_attr_date"></span></div>
+                    <div>時間：<span id="book_attr_time"></span></div>
+                    <div>費用：<span id="book_attr_price"></span></div>
+                    <div>地點：<span id="book_attr_address"></span></div>
+                </div>
+            </div>
+        </div>
+        <div class="check_data_box">
+            <hr class="book_new_area">
+            <form>
+                <div id="contact-info">您的聯絡資訊</div>
+                <div class="contact-inputs">聯絡姓名：<input id="contact_name" class="check_input" type="text" autocomplete="off" placeholder="請輸入姓名" required></div>
+                <div class="contact-inputs">連絡信箱：<input id="contact_email" class="check_input" type="email" autocomplete="off" placeholder="請輸入電子郵件" required></div>
+                <div class="contact-inputs">手機號碼：<input id="contact_phone" class="check_input" type="text" autocomplete="off" placeholder="請輸入手機號碼" maxlength="10" oninput="value=value.replace(/[^\d]/g,'')" required></div>
+                <div id="contact-remind">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
+                <hr class="book_new_area">
+                <div id="card-info">信用卡付款資訊</div>    
+                <div class="form-group card-number-group">
+                    <div for="card-number" ><span id="cardtype"></span>
+                        卡片號碼：
+                        <input class="check_input card-number" id="card-number" placeholder="**** **** **** ****"></input>
+                    </div>
+                </div>
+                <div class="form-group expiration-date-group">
+                    <div for="expiration-date">
+                        過期時間：
+                        <input class="check_input expiration-date" id="tappay-expiration-date" placeholder="MM / YY"></input>
+                    </div>                    
+                </div>
+                <div class="form-group cvc-group">
+                    <div for="cvc" class="control-label">
+                        驗證密碼：
+                        <input class="check_input cvc" id="card-cvc" placeholder="CVV"></input>
+                    </div>
+                </div>
+                
+                <hr class="book_new_area">
+                <div class="total">
+                    <div id="total_title">
+                        總價：<div id="total_price">
+                    </div>
+                </div>
+                <div>
+                    <button type="submit" class="total_btn">確認訂購並付款</button>
+                </div>
+                </div> 
+            </form>         
+        </div>
+    </div>
+    
+    <div id="no_booking" class="no_booking">目前沒有任何待預訂的行程</div>
+    </div>
+    <div class="footer">
+        <div>COPYRIGHT © 2021 台北一日遊</div>
+    </div>
+
+    <script src="../static/js/booking.js"></script>
+    <script src="../static/js/login.js"></script>
+</body>
+</html>

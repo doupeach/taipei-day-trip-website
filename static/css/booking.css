@@ -1,0 +1,284 @@
+#slides {
+  top: -7px;
+}
+
+#book_attr_name {
+  margin-bottom: 15px;
+  color: #448899;
+  font-family: "Noto Sans TC";
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 13px;
+}
+
+#contact-info {
+  font-family: "Noto Sans TC";
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 16px;
+  color: #666666;
+  margin-top: 44px;
+  margin-bottom: 31px;
+}
+
+.contact-inputs {
+  font-family: "Noto Sans TC";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 13px;
+  color: #666666;
+}
+
+#contact-remind {
+  font-family: "Noto Sans TC";
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 13px;
+  color: #666666;
+  margin-top: 20px;
+  margin-bottom: 45px;
+}
+
+#card-info {
+  font-family: "Noto Sans TC";
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 16px;
+  color: #666666;
+  margin-top: 44px;
+  margin-bottom: 31px;
+}
+
+.user_check {
+  text-align: left;
+  width: 61%;
+  margin: 94px 58% 35px 21%;
+  justify-content: center;
+  line-height: 24px;
+  font-weight: 700;
+  font-size: 19px;
+  font-family: "Noto Sans TC";
+  line-height: 16px;
+  color: #666666;
+}
+
+.checking_box {
+  font-weight: 700;
+  grid-template-rows: max-content;
+  text-align: left;
+  min-width: 800px;
+  border-radius: 5px;
+  padding: 5px 0px;
+}
+
+.checking_box div,
+.form-group div {
+  font-family: "Noto Sans TC";
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 13px;
+  color: #666666;
+  margin-bottom: 20px;
+}
+
+.checking_box div span {
+  font-weight: 400;
+}
+
+.check_img {
+  display: block;
+  max-width: 266px;
+  min-width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.book_delete_img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  cursor: pointer;
+}
+
+.check_subtitle {
+  text-align: left;
+  margin-left: 20px;
+  width: 38%;
+  position: relative;
+}
+
+.checking {
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.check_data_box {
+  text-align: left;
+  width: 61%;
+  margin: 46px 58% 15px 21%;
+  justify-content: center;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.check_input {
+  margin-bottom: 2%;
+  height: 38px;
+  width: 200px;
+  border-radius: 5px;
+  border: 1px solid #e8e8e8;
+  font-size: 16px;
+  margin: 5px 0;
+  padding: 1px 0 0 10px;
+  box-shadow: 1px 1px 6px -2px #cccccc;
+}
+
+.total {
+  display: inline-grid;
+  margin: 0px 0 15px 78%;
+  justify-content: right;
+}
+
+#total_title {
+  margin: 43px 0 25px 0;
+  font-family: "Noto Sans TC";
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 13px;
+  display: flex;
+  align-items: center;
+  text-align: right;
+  color: #666666;
+}
+
+.total_btn {
+  background-color: #448899;
+  color: #ffffff;
+  width: 154px;
+  height: 36px;
+  border-style: none;
+  border-radius: 5px;
+  font-size: 19px;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.no_booking {
+  font-family: "Noto Sans TC";
+  text-align: left;
+  width: 61%;
+  margin: 35px 58% 35px 21%;
+  justify-content: center;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 13px;
+  color: #666666;
+}
+
+.tpfield {
+  height: 40px;
+  width: 300px;
+  border: 1px solid gray;
+  margin: 5px 0;
+  padding: 5px;
+}
+
+.book_new_area {
+  text-align: left;
+  border-top: 1px solid #e8e8e8;
+  margin: 30px 0 30px 0;
+  justify-content: center;
+}
+
+.full_height {
+  height: 90vh;
+}
+.full_height div{
+  margin-top: 45px;
+  align-self: flex-start;
+}
+
+@media screen and (max-width: 1200px) {
+  .checking_box {
+    min-width: revert;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 850px) {
+  .check_subtitle {
+    width: revert;
+  }
+
+  .checking_box {
+    min-width: revert;
+  }
+
+  #contact-remind {
+    line-height: 23px;
+  }
+
+  .full_height {
+    height: 80vh;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .total {
+    margin: 0 0 40px 25%;
+  }
+}
+
+@media screen and (max-width: 570px) {
+  .check_img {
+    max-width: 360px;
+    min-width: 360px;
+    border-radius: 5px;
+  }
+
+  .check_subtitle {
+    max-width: 340px;
+    min-width: 340px;
+  }
+
+  .checking_box {
+    max-width: 340px;
+    min-width: 340px;
+  }
+
+  .check_data_box {
+    width: 93%;
+    margin: 46px 58% 15px 5%;
+  }
+
+  .user_check {
+    width: 93%;
+    margin: 94px 58% 35px 5%;
+  }
+  #book_attr_name {
+    margin-top: 35px;
+  }
+
+  .book_delete_img {
+    bottom: 0;
+    right: 10px;
+    margin-top: 200px;
+  }
+}
+
+@media screen and (max-width: 360px) {
+  .total {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 40px;
+    margin-right: 10px;
+    align-items: flex-end;
+  }
+}
