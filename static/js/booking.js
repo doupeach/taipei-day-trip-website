@@ -1,5 +1,7 @@
 let book_welcome = document.getElementById("book_welcome")
 let src_user = "/api/user"
+let src_attr = "/api/booking"
+
 fetch(src_user).then(function (response) {
     return response.json();
 }).then(function (result) {
@@ -9,6 +11,7 @@ fetch(src_user).then(function (response) {
     book_welcome.textContent = "您好，"+result["data"].name+"，待預定的行程如下：";
     booking();
 })
+
 
 function booking(){
     let attr_name = document.getElementById("book_attr_name");
@@ -21,7 +24,7 @@ function booking(){
     let ybook = document.getElementById("yes_booking");
     let nbook = document.getElementById("no_booking");
     let footer = document.getElementsByClassName('footer')[0]
-    let src_attr = "/api/booking"
+
     fetch(src_attr).then(function (response) {
         return response.json();
     }).then(function (result) {
@@ -52,9 +55,15 @@ function booking(){
 }
 
 function delete_booking(){
-    let req = new XMLHttpRequest();
-    req.open("DELETE", "/api/booking");
-    req.setRequestHeader("Content-Type", "application/json");
-    req.send();
-    window.location.reload();
+    fetch(src_attr, {
+        method:"DELETE"
+    }).then((response)=>{
+        return response.json();
+    }).then((data)=>{
+        console.log(data);
+        if(data['ok']){ 
+            window.location.reload();
+    }}).catch((error)=>{
+        console.log(error);
+    })
 }

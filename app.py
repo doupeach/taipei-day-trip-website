@@ -28,17 +28,19 @@ my_pool = pooling.MySQLConnectionPool(
 )
 
 mysql_config = {
-    'pool_name':'my_pool',
-    'pool_size':10,
-    'pool_reset_session':True,
-    'host':'localhost',
-    'user':'root',
-    'password':PASSWORD,
-    'database':DATABASE,
-    'auth_plugin':'mysql_native_password'
+    'pool_name': 'my_pool',
+    'pool_size': 10,
+    'pool_reset_session': True,
+    'host': 'localhost',
+    'user': 'root',
+    'password': PASSWORD,
+    'database': DATABASE,
+    'auth_plugin': 'mysql_native_password'
 }
 
 # prevent pool exhausted
+
+
 class ReallyMySQLConnectionPool(mysql.connector.pooling.MySQLConnectionPool):
     def __init__(self, **mysql_config):
         pool_size = mysql_config.get('pool_size', 10)
@@ -54,7 +56,7 @@ class ReallyMySQLConnectionPool(mysql.connector.pooling.MySQLConnectionPool):
         self._semaphore.release()
 
 
-cnxpool = ReallyMySQLConnectionPool(**mysql_config,connection_timeout=30)
+cnxpool = ReallyMySQLConnectionPool(**mysql_config, connection_timeout=30)
 
 
 @contextmanager
@@ -83,11 +85,9 @@ if __name__ == '__main__':
     import time
     from concurrent.futures import ThreadPoolExecutor
 
-
     def t(n):
         r1 = PyMysql.get_all("select * from TABLE")
         print(str(n) + str(r1))
-
 
     s = time.time()
     with ThreadPoolExecutor(max_workers=15) as pool:
@@ -95,6 +95,7 @@ if __name__ == '__main__':
             pool.submit(t, (i))
 
     print(time.time() - s)
+
 
 @app.route("/api/attraction/<attractionId>")
 def getAttraction(attractionId):
@@ -316,8 +317,13 @@ def api_booking():
 				    "date": session["date"], "time": session["time"], "price": session["price"]}
 
 				stud_json = json.dumps({"data": get_dict}, indent=2, ensure_ascii=False)
+				print(attraction_dict)
+				print(get_dict)
+				print(session)
+
 				return stud_json, 200
 			else:
+				print(session)
 				return jsonify({"data": None}), 200
 		else:
 			return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
@@ -325,6 +331,7 @@ def api_booking():
 	elif(request.method == "POST"):
 		if "id" in session:
 			data = request.get_json()
+			print(data)
 			session["attractionId"] = data["attractionId"]
 			session["attr_name"] = data["name"]
 			session["attr_address"] = data["address"]
@@ -340,6 +347,7 @@ def api_booking():
 
 	elif(request.method == "DELETE"):
 		if "id" in session:
+			print(session)
 			session.pop("attractionId", None)
 			session.pop("attr_name", None)
 			session.pop("attr_address", None)
@@ -347,6 +355,7 @@ def api_booking():
 			session.pop("date", None)
 			session.pop("time", None)
 			session.pop("price", None)
+
 			return jsonify({"ok":True}), 200
 		else:
 			return jsonify({"error": True, "message":"未登入系統，拒絕存取"}), 403
