@@ -83,30 +83,30 @@
         </div>
         <div class="check_data_box">
             <hr class="book_new_area">
-            <form>
+            <form id="order-form">
                 <div id="contact-info">您的聯絡資訊</div>
                 <div class="contact-inputs">聯絡姓名：<input id="contact_name" class="check_input" type="text" autocomplete="off" placeholder="請輸入姓名" required></div>
                 <div class="contact-inputs">連絡信箱：<input id="contact_email" class="check_input" type="email" autocomplete="off" placeholder="請輸入電子郵件" required></div>
                 <div class="contact-inputs">手機號碼：<input id="contact_phone" class="check_input" type="text" autocomplete="off" placeholder="請輸入手機號碼" maxlength="10" oninput="value=value.replace(/[^\d]/g,'')" required></div>
                 <div id="contact-remind">請保持手機暢通，準時到達，導覽人員將用手機與您聯繫，務必留下正確的聯絡方式。</div>
                 <hr class="book_new_area">
+
                 <div id="card-info">信用卡付款資訊</div>    
                 <div class="form-group card-number-group">
-                    <div for="card-number" ><span id="cardtype"></span>
-                        卡片號碼：
-                        <input class="check_input card-number" id="card-number" placeholder="**** **** **** ****"></input>
+                    <div for="card-number" class="card-inputs">卡片號碼：
+                        <div class="check_input card-number tpfield" id="card-number" ></div>
                     </div>
                 </div>
                 <div class="form-group expiration-date-group">
-                    <div for="expiration-date">
+                    <div for="expiration-date" class="card-inputs">
                         過期時間：
-                        <input class="check_input expiration-date" id="tappay-expiration-date" placeholder="MM / YY"></input>
+                        <div class="check_input expiration-date tpfield" id="card-expiration-date" ></div>
                     </div>                    
                 </div>
                 <div class="form-group cvc-group">
-                    <div for="cvc" class="control-label">
+                    <div for="ccv" class="control-label card-inputs">
                         驗證密碼：
-                        <input class="check_input cvc" id="card-cvc" placeholder="CVV"></input>
+                        <div class="check_input ccv tpfield" id="card-ccv" ></div>
                     </div>
                 </div>
                 
@@ -117,7 +117,8 @@
                     </div>
                 </div>
                 <div>
-                    <button type="submit" class="total_btn">確認訂購並付款</button>
+                    <button id='submit-btn' type="submit" class="total_btn">確認訂購並付款</button>
+                    <span id="handleErrorSubmit"></span>
                 </div>
                 </div> 
             </form>         
@@ -132,5 +133,7 @@
 
     <script src="../static/js/booking.js"></script>
     <script src="../static/js/login.js"></script>
+    <script src="https://js.tappaysdk.com/tpdirect/v5.8.0"></script>
+    <script src="../static/js/tappay.js"></script>
 </body>
 </html>

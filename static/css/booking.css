@@ -21,7 +21,35 @@
   margin-bottom: 31px;
 }
 
+.checking_box div {
+  font-family: "Noto Sans TC";
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 13px;
+  color: #666666;
+  margin-bottom: 20px;
+}
+
+.form-group div {
+  font-family: "Noto Sans TC";
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 13px;
+  color: #666666;
+  /* margin-bottom: 20px; */
+  display: flex;
+  align-items: center;
+}
+
 .contact-inputs {
+  font-family: "Noto Sans TC";
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 13px;
+  color: #666666;
+}
+
+.form-group .card-inputs {
   font-family: "Noto Sans TC";
   font-weight: 400;
   font-size: 16px;
@@ -71,15 +99,7 @@
   padding: 5px 0px;
 }
 
-.checking_box div,
-.form-group div {
-  font-family: "Noto Sans TC";
-  font-weight: 700;
-  font-size: 16px;
-  line-height: 13px;
-  color: #666666;
-  margin-bottom: 20px;
-}
+
 
 .checking_box div span {
   font-weight: 400;
@@ -200,9 +220,13 @@
 .full_height {
   height: 90vh;
 }
-.full_height div{
+.full_height div {
   margin-top: 45px;
   align-self: flex-start;
+}
+
+#handleErrorSubmit {
+  color: red;
 }
 
 @media screen and (max-width: 1200px) {
@@ -270,6 +294,18 @@
     bottom: 0;
     right: 10px;
     margin-top: 200px;
+  }
+
+  .tpfield {
+    margin-bottom: 2%;
+    height: 38px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid #e8e8e8;
+    font-size: 16px;
+    margin: 5px 0;
+    padding: 1px 0 0 10px;
+    box-shadow: 1px 1px 6px -2px #cccccc;
   }
 }
 

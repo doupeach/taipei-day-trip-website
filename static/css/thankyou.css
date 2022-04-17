@@ -1,0 +1,34 @@
+.thankyou-title-div {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(135deg, #adaaee 0%, #66aabb 100%);
+  position: relative;
+  padding: 54px 0px 0px 0px;
+}
+
+.slogan-box {
+  position: absolute;
+  top: 55%;
+  margin: 0px 19% 0 19%;
+  transform: translateY(-50%);
+  text-align: left;
+  color: #f8f8f8;
+}
+
+.slogan-title {
+  font-family: "Noto Sans TC";
+  font-weight: bold;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  color: #f8f8f8;
+}
+
+.slogan-text {
+  font-family: "Noto Sans TC";
+  font-size: 16px;
+  margin: 15px 0px 25px 0px;
+  display: inline-grid;
+  font-weight: 700;
+  align-items: flex-end;
+}

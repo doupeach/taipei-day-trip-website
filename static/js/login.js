@@ -183,33 +183,6 @@ const hideBlock = (e) => {
     e.classList.add("hidden");
 }
 
-
-
-// const showSchedules = async () => {
-//     const option = {
-//         method: "GET",
-//         headers: {
-//             "Content-Type": "application/json"
-//         },
-//     };
-//     const response = await fetch("/api/booking", option);
-//     const promise = await response.json();
-//     const result = await promise;
-
-//     if (result.data.length) {
-//         bookingNumber.textContent = result.data.length;
-//         bookingIcon.style.transform = "scale(1)";
-//     }
-
-//     else {
-//         bookingIcon.style.transform = "scale(0)";
-//     }
-// }
-
-// //
-// showSchedules();
-
-
 // handle login
 loginBtn.addEventListener("click", () => {
     popup.style.pointerEvents = "all";
@@ -327,20 +300,7 @@ signInBtn.addEventListener("click", async () => {
                     "Content-Type": "application/json"
                 },
             };
-            // const bookingResponse = await fetch("/api/booking", bookingOption);
-            // const bookingPromise = await bookingResponse.json();
-            // const bookingResult = await bookingPromise;
-        
-            // if (bookingResult.data.length) {
-            //     bookingNumber.textContent = bookingResult.data.length;
-            //     bookingIcon.style.transform = "scale(1)";
-            // }
-        
-            // else {
-            //     bookingIcon.style.transform = "scale(0)";
-            // }
         }
-
         else if (result.error) {
             setErrorInput(signInEmail);
             setErrorInput(signInPwd);
@@ -473,6 +433,9 @@ const checkLoginStatus = async () => {
     if (signInResult.data) {
         hideBlock(loginBtn);
         showBlock(signOutBtn);
+        if(document.getElementById('order-user')){
+            document.getElementById('order-user').textContent = `Hello ${signInResult.data.name}!`
+        }
     }
   
     else{

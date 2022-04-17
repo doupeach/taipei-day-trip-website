@@ -60,7 +60,6 @@ function delete_booking(){
     }).then((response)=>{
         return response.json();
     }).then((data)=>{
-        console.log(data);
         if(data['ok']){ 
             window.location.reload();
     }}).catch((error)=>{
