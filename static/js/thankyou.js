@@ -13,7 +13,6 @@ function ordered_onload(){
 }
 
 function renderOrder(){
-    console.log('order rendered')
     const order_id = document.getElementById("order-id")
     const order_message = document.getElementById("order-msg")
     
