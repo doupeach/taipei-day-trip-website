@@ -1,6 +1,6 @@
-const gateBtn = document.getElementById("login-btn")    
+const loginBtn = document.getElementById("login-btn")    
 const signOutBtn = document.getElementById("js-navbar__sign-out-btn");
-const bookingBtn = document.getElementById("js-navbar__booking-btn");
+const bookingBtn = document.getElementById("schedule");
 const bookingIcon = document.getElementById("js-navbar__icon");
 const bookingNumber = document.getElementById("js-navbar__number");
 const popup = document.getElementById("js-popup");
@@ -41,7 +41,7 @@ const resetGateInput = () => {
     removeMsg(signInMsg);
 }
 
-const validateSignUp = () => {
+const handleSignUpValidation = () => {
     const name = signUpName.value.trim();
     const email = signUpEmail.value.trim();
     const pwd = signUpPwd.value.trim();
@@ -83,7 +83,7 @@ const validateSignUp = () => {
     }
 }
 
-const validateSignIn = () => {
+const handleSignInValidation = () => {
     const email = signInEmail.value.trim();
     const pwd = signInPwd.value.trim();
 
@@ -183,34 +183,8 @@ const hideBlock = (e) => {
     e.classList.add("hidden");
 }
 
-// Controller
-// const showSchedules = async () => {
-//     const option = {
-//         method: "GET",
-//         headers: {
-//             "Content-Type": "application/json"
-//         },
-//     };
-//     const response = await fetch("/api/booking", option);
-//     const promise = await response.json();
-//     const result = await promise;
-
-//     if (result.data.length) {
-//         bookingNumber.textContent = result.data.length;
-//         bookingIcon.style.transform = "scale(1)";
-//     }
-
-//     else {
-//         bookingIcon.style.transform = "scale(0)";
-//     }
-// }
-
-// //
-// showSchedules();
-
-
 // handle login
-gateBtn.addEventListener("click", () => {
+loginBtn.addEventListener("click", () => {
     popup.style.pointerEvents = "all";
     popup.style.display = "flex";
     popup.style.transition = "1s";
@@ -261,7 +235,7 @@ signUpBtn.addEventListener("click", async () => {
         body: JSON.stringify(data)
     };
 
-    if (validateSignUp()) {
+    if (handleSignUpValidation()) {
         const response = await fetch("/api/user", option);
         const promise = await response.json();
         const result = await promise;
@@ -305,7 +279,7 @@ signInBtn.addEventListener("click", async () => {
         body: JSON.stringify(data)
     };
 
-    if (validateSignIn()) {
+    if (handleSignInValidation()) {
         const response = await fetch("/api/user", option);
         const promise = await response.json();
         const result = await promise;
@@ -316,7 +290,7 @@ signInBtn.addEventListener("click", async () => {
             popup.style.transition = "1s";
             gate.style.transform = "translateY(-400px)";
             gate.style.transition = "0.3s";
-            hideBlock(gateBtn);
+            hideBlock(loginBtn);
             showBlock(signOutBtn);
             isLogin = true
 
@@ -326,20 +300,7 @@ signInBtn.addEventListener("click", async () => {
                     "Content-Type": "application/json"
                 },
             };
-            // const bookingResponse = await fetch("/api/booking", bookingOption);
-            // const bookingPromise = await bookingResponse.json();
-            // const bookingResult = await bookingPromise;
-        
-            // if (bookingResult.data.length) {
-            //     bookingNumber.textContent = bookingResult.data.length;
-            //     bookingIcon.style.transform = "scale(1)";
-            // }
-        
-            // else {
-            //     bookingIcon.style.transform = "scale(0)";
-            // }
         }
-
         else if (result.error) {
             setErrorInput(signInEmail);
             setErrorInput(signInPwd);
@@ -363,7 +324,7 @@ signOutBtn.addEventListener("click", async () => {
 
     if (result.ok) {
         window.location.reload();
-        showBlock(gateBtn);
+        showBlock(loginBtn);
         hideBlock(signOutBtn);
         isLogin = false
     }
@@ -432,7 +393,7 @@ signInPwd.addEventListener("blur", () => {
     }
 });
 
-bookingBtn?.addEventListener("click", async () => {
+bookingBtn.addEventListener("click", async () => {
     const option = {
         method: "GET",
         headers: {
@@ -445,9 +406,7 @@ bookingBtn?.addEventListener("click", async () => {
 
     if (signInResult.data) {
         window.location.href = "/booking";
-    }
-
-    else{
+    } else {
         popup.style.pointerEvents = "all";
         popup.style.display = "flex";
         popup.style.transition = "1s";
@@ -472,12 +431,15 @@ const checkLoginStatus = async () => {
     const signInResult = await signInPromise;
     
     if (signInResult.data) {
-        hideBlock(gateBtn);
+        hideBlock(loginBtn);
         showBlock(signOutBtn);
+        if(document.getElementById('order-user')){
+            document.getElementById('order-user').textContent = `Hello ${signInResult.data.name}!`
+        }
     }
   
     else{
-        showBlock(gateBtn);
+        showBlock(loginBtn);
         hideBlock(signOutBtn);
     }
   }

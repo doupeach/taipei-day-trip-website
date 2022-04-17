@@ -2,11 +2,15 @@ from dotenv import load_dotenv
 import os
 from mysql.connector import pooling
 import mysql.connector
+import requests
+
+from threading import Semaphore
+from contextlib import contextmanager
 from flask import *
 app = Flask(__name__)
 app.config["JSON_AS_ASCII"] = False
 app.config["TEMPLATES_AUTO_RELOAD"] = True
-app.secret_key='asbs'
+app.secret_key = 'asbs'
 # app.config['Access-Control-Allow-Origin'] = '*'
 
 # add by me
@@ -24,6 +28,75 @@ my_pool = pooling.MySQLConnectionPool(
     password=PASSWORD,
     database=DATABASE, auth_plugin='mysql_native_password'
 )
+
+mysql_config = {
+    'pool_name': 'my_pool',
+    'pool_size': 10,
+    'pool_reset_session': True,
+    'host': 'localhost',
+    'user': 'root',
+    'password': PASSWORD,
+    'database': DATABASE,
+    'auth_plugin': 'mysql_native_password'
+}
+
+# prevent pool exhausted
+
+
+class ReallyMySQLConnectionPool(mysql.connector.pooling.MySQLConnectionPool):
+    def __init__(self, **mysql_config):
+        pool_size = mysql_config.get('pool_size', 10)
+        self._semaphore = Semaphore(pool_size)
+        super().__init__(**mysql_config)
+
+    def get_connection(self):
+        self._semaphore.acquire()
+        return super().get_connection()
+
+    def put_connection(self, con):
+        con.close()  # con是PooledMySQLConnection的实例
+        self._semaphore.release()
+
+
+cnxpool = ReallyMySQLConnectionPool(**mysql_config, connection_timeout=30)
+
+
+@contextmanager
+def get_cursor():
+    try:
+        con = cnxpool.get_connection()
+        cursor = con.cursor()
+        yield cursor
+    except mysql.connector.Error as err:
+        print('errno={}'.format(err))
+
+    finally:
+        cursor.close()
+        cnxpool.put_connection(con)
+
+
+class PyMysql(object):
+    @staticmethod
+    def get_all(sql):
+        with get_cursor() as cursor:
+            cursor.execute(sql)
+            return cursor.fetchall()
+
+
+if __name__ == '__main__':
+    import time
+    from concurrent.futures import ThreadPoolExecutor
+
+    def t(n):
+        r1 = PyMysql.get_all("select * from TABLE")
+        print(str(n) + str(r1))
+
+    s = time.time()
+    with ThreadPoolExecutor(max_workers=15) as pool:
+        for i in range(20):
+            pool.submit(t, (i))
+
+    print(time.time() - s)
 
 
 @app.route("/api/attraction/<attractionId>")
@@ -167,6 +240,7 @@ def user():
         else:
             stud_json = json.dumps(
                 {"data": None}, indent=2, ensure_ascii=False)
+        db.close()
         return stud_json, 200
     elif (request.method == "POST"):
         data = request.get_json()
@@ -181,14 +255,14 @@ def user():
         for check in cursor:
             new_check = check[0]
         if (new_check == semail):
-            cursor.close()
+            db.close()
             return jsonify({"error": True, "message": "The email has already been registered."}), 400
         else:
             sql = "INSERT INTO `user` (name, password, email) VALUES ( %s, %s, %s );"
             member_data = (sname, spassword, semail)
             cursor.execute(sql, member_data)
             db.commit()
-            cursor.close()
+            db.close()
             return jsonify({"ok": True}), 200
     elif (request.method == "PATCH"):
         data = request.get_json()
@@ -208,7 +282,7 @@ def user():
             rname = name
             remail = email
             rpw = pw
-        cursor.close()
+        db.close()
         if (remail == uemail and rpw == upassword):
             session["id"] = rid
             session["name"] = rname
@@ -226,7 +300,183 @@ def user():
         session.pop("email", None)
         stud_json = json.dumps({"ok": True}, indent=2, ensure_ascii=False)
         print('logged out')
+        db.close()
         return stud_json, 200
+
+
+@app.route("/api/booking", methods=["GET", "POST", "DELETE"])
+def api_booking():
+	if(request.method == "GET"):
+		if "id" in session:
+			if "attractionId" in session:
+				attraction_dict = {
+					"id": session["attractionId"],
+					"name": session["attr_name"],
+					"address": session["attr_address"],
+					"image": session["attr_img"]
+				}
+				get_dict = {"attraction": attraction_dict,
+				    "date": session["date"], "time": session["time"], "price": session["price"]}
+
+				stud_json = json.dumps({"data": get_dict}, indent=2, ensure_ascii=False)
+
+				return stud_json, 200
+			else:
+				return jsonify({"data": None}), 200
+		else:
+			return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
+
+	elif(request.method == "POST"):
+		if "id" in session:
+			data = request.get_json()
+
+			session["attractionId"] = data["attractionId"]
+			session["attr_name"] = data["name"]
+			session["attr_address"] = data["address"]
+			session["attr_img"] = data["image"]
+			session["date"] = data["date"]
+			session["time"] = data["time"]
+			session["price"] = data["price"]
+			return jsonify({"ok": True}), 200
+		elif "id" not in session:
+			return jsonify({"error": True, "message": "未登入系統，拒絕存取"}), 403
+		else:
+			return jsonify({"error": True, "message": "檔案建立失敗"}), 400
+
+	elif(request.method == "DELETE"):
+		if "id" in session:
+
+			session.pop("attractionId", None)
+			session.pop("attr_name", None)
+			session.pop("attr_address", None)
+			session.pop("attr_img", None)
+			session.pop("date", None)
+			session.pop("time", None)
+			session.pop("price", None)
+
+			return jsonify({"ok":True}), 200
+		else:
+			return jsonify({"error": True, "message":"未登入系統，拒絕存取"}), 403
+
+
+@app.route("/api/orders", methods = ["POST"])
+def order_post():
+	db = my_pool.get_connection()
+	cursor = db.cursor(buffered=True)
+	if "id" in session:
+		data = request.get_json()
+		order_no = str(time.strftime('%Y%m%d%H%M%S', time.localtime(time.time()))) + str(time.time()).replace('.', '')[-4:]
+		price = data["order"]["price"]
+		attr_id = data["order"]["trip"]["attraction"]["id"]
+		attr_name = data["order"]["trip"]["attraction"]["name"]
+		attr_address = data["order"]["trip"]["attraction"]["address"]
+		attr_image = data["order"]["trip"]["attraction"]["image"]
+		go_date = data["order"]["trip"]["date"]
+		go_time = data["order"]["trip"]["time"]
+		contact_name = data["order"]["contact"]["name"]
+		contact_email = data["order"]["contact"]["email"]
+		contact_phone = data["order"]["contact"]["phone"]
+		url = "https://sandbox.tappaysdk.com/tpc/payment/pay-by-prime"
+		toTP = {
+			"prime": data["prime"],
+			"partner_key": os.getenv("PARTNER_KEY"),
+			"merchant_id": os.getenv("MERCHANT_ID"),
+			"details":"TapPay Test",
+			"amount": price,
+			"cardholder": {
+				"phone_number": contact_phone,
+				"name": contact_name,
+				"email": contact_email,
+			},
+			"remember": True
+		}
+		head = {
+			"Content-Type" : "application/json;",
+			"x-api-key" : os.getenv("PARTNER_KEY")
+			}
+		send_TP = json.dumps(toTP, indent=2)
+		Tprequest = requests.post(url, headers = head, data = send_TP)
+		status = json.loads(Tprequest.text)["status"]
+
+		if(status == 0): 
+			status_message = "付款成功"
+			session.pop("attractionId", None)
+			session.pop("attr_name", None)
+			session.pop("attr_address", None)
+			session.pop("attr_img", None)
+			session.pop("date", None)
+			session.pop("time", None)
+			session.pop("price", None)
+		else: 
+			status_message = "付款失敗"
+
+
+		cursor = db.cursor(buffered=True)
+		sql = """INSERT INTO `booking` (number, price, attr_id, attr_name, attr_address, attr_image, date, time, contact_name, contact_email, contact_phone, status)
+				 VALUES ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s );"""
+		booking_data = (order_no, price, attr_id, attr_name, attr_address, attr_image, go_date, go_time, contact_name, contact_email, contact_phone, status)
+		cursor.execute(sql, booking_data)
+		db.commit()   
+		db.close()
+		
+		return jsonify({"data": {"number":order_no, "payment":{"status":status, "message":status_message}}}), 200
+	elif "id" not in session:
+		return jsonify({"error": True, "message":"未登入系統，拒絕存取"}), 403
+	else:
+		return jsonify({"error": True, "message":"訂單建立錯誤"}), 400
+
+
+@app.route("/api/order/<orderNumber>", methods = ["GET"])
+def order_get(orderNumber):
+	db = my_pool.get_connection()
+	cursor = db.cursor(buffered=True)
+
+	if "id" in session:
+		sql = "SELECT * FROM `booking` WHERE `number` = %s;"
+		check = (orderNumber,)
+		cursor.execute(sql, check)
+		data = cursor.fetchall()
+		cursor.close()
+
+		if (data != []):
+
+			for row in data:
+				order = {
+					"data":{
+						"number" : row[1],
+						"price" : row[2],
+						"trip" : {
+							"attraction" : {
+								"id" : row[3],
+								"name" : row[4],
+								"address" : row[5],
+								"image" : row[6]
+							},
+							"date" : row[7],
+							"time" : row[8]
+						},
+						"contact" : {
+							"name" : row[9],
+							"email" : row[10],
+							"phone" : row[11]
+						},
+						"status" : 0
+					}
+				}
+			stud_json = json.dumps(order, indent=2, ensure_ascii=False)
+			session.pop("attractionId", None)
+			session.pop("attr_name", None)
+			session.pop("attr_address", None)
+			session.pop("attr_img", None)
+			session.pop("date", None)
+			session.pop("time", None)
+			session.pop("price", None)
+			return stud_json, 200
+		else:
+			stud_json = json.dumps({"data":None}, indent=2, ensure_ascii=False)
+			return stud_json, 200
+	else:
+		return jsonify({"error": True, "message":"未登入系統，拒絕存取"}), 403
 
 
 # DO NOT MODIFY NOW
